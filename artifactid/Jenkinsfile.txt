@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    tools {
+       
+        maven "maven3.8.1"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                
+                git 'https://github.com/sahithi283/MyWebProject.git'
+
+                
+                sh "mvn -f artifactid/pom.xml clean"
+             
+            }
+
+        }
+        stage('Test') {
+            steps {
+        
+                git 'https://github.com/sahithi283/MyWebProject.git'
+
+                
+                sh "mvn -f artifactid/pom.xml test"
+             
+            }
+
+        }
+        
+        stage('Package') {
+            steps {
+        
+                git 'https://github.com/sahithi283/MyWebProject.git'
+
+                
+                sh "mvn -f artifactid/pom.xml package"
+             
+            }
+
+        }
+        
+        stage('Result'){
+            steps{
+                archiveArtifacts artifacts: '**\\*.war', followSymlinks: false
+            }
+        }
+        
+        stage('Deploy'){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: 'TomcatCredentials', path: '', url: 'http://3.142.150.232:8090/')], contextPath: null, war: '**/*.war'
+            }
+        }
+        
+    }
+
+}
