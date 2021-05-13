@@ -44,19 +44,19 @@ pipeline {
         
         stage('Upload the binary artifact to nexus'){
             steps{
-                nexusPublisher nexusInstanceId: 'nexus1', nexusRepositoryId: 'JenkinsCICDRepository', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'artifactid/target/artifactid.war']], mavenCoordinate: [artifactId: 'mycompany', groupId: 'com', packaging: 'war', version: '3.0']]]
+                nexusPublisher nexusInstanceId: 'nexus1', nexusRepositoryId: 'JenkinsCICDRepository', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'artifactid/target/artifactid.war']], mavenCoordinate: [artifactId: 'mycompany', groupId: 'com', packaging: 'war', version: '2.0']]]
             }
         }
 
         stage('Upload binary file to tomcat'){
 		steps{
-			sh "wget --user=admin --password=admin http://18.222.129.177:8081/repository/JenkinsCICDRepository/com/mycompany/3.0/mycompany-3.0.war"
+			sh "wget --user=admin --password=admin http://18.222.129.177:8081/repository/JenkinsCICDRepository/com/mycompany/2.0/mycompany-2.0.war"
 		}
 	}
         
         stage('Deploy'){
             steps{
-                deploy adapters: [tomcat9(credentialsId: 'TomcatCredentials', path: '', url: 'http://3.142.150.232:8090/')], contextPath: null, war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'TomcatCredentials', path: '', url: 'http://3.142.150.232:8090/')], contextPath: null, war: 'mycompany-2.0.war'
             }
         }
         
