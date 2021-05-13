@@ -42,11 +42,17 @@ pipeline {
 
         }
         
-        stage('Result'){
+        stage('Upload the binary artifact to nexus'){
             steps{
-                archiveArtifacts artifacts: '**\\*.war', followSymlinks: false
+                nexusPublisher nexusInstanceId: 'nexus1', nexusRepositoryId: 'JenkinsCICDRepository', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'artifactid/target/artifactid.war']], mavenCoordinate: [artifactId: 'mycompany', groupId: 'com', packaging: 'war', version: '2.0']]]
             }
         }
+
+        stage('Upload binary file to tomcat'){
+		steps{
+			sh "wget user=admin password=admin http://18.222.129.177:8081/repository/JenkinsCICDRepository/com/mycompany/2.0/mycompany-2.0.war"
+		}
+	}
         
         stage('Deploy'){
             steps{
