@@ -9,8 +9,12 @@ public class MyTest {
     public void test1(){
         Assert.assertTrue(true);
     }
+
     @Test
     public void test2(){
+    System.out.println("hi");
+    boolean condition=true;
+    if(!condition){}
         Assert.assertTrue(true);
     }
 
